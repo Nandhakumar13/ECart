@@ -19,15 +19,21 @@ class ApiFeatures {
 
     filter(){
         const queryStrCopy = {...this.queryStr};
-        console.log("query str", queryStrCopy);
+        // console.log("query str", queryStrCopy);
 
         // remove the other fields from query
         const removeFields = ['keyword','limit','page'];
         removeFields.forEach(key => delete queryStrCopy[key]);
-        console.log("after filter out other keywords", queryStrCopy);
+        // console.log("after filter out other keywords", queryStrCopy);
+
+        let queryOperStr = JSON.stringify(queryStrCopy);
+        queryOperStr = queryOperStr.replace(/\b(gt|gte|lt|lte)/g, match => `$${match}`);
+
+        console.log("query operator string", queryOperStr);
         
-        this.query.find(queryStrCopy);
-        return this
+        
+        this.query.find(JSON.parse(queryOperStr));
+        return this;
         
     }
 }
