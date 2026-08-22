@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const errorMiddleware  = require("./middleware/error")
 
+app.set('query parser', 'extended');
+
 const products = require('./router/product');
 const home = require('./router/home')
 
