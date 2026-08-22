@@ -9,7 +9,8 @@ const productContMethods = {}
 productContMethods.getProducts = async (req,res,next) => {
 //    const products =  await Product.find();
 
-   const apiFeatures = new ApiFeatures(Product.find(), req.query).search().filter();
+    const resPerPage = 2;
+   const apiFeatures = new ApiFeatures(Product.find(), req.query).search().filter().paginate(resPerPage);
    const products = await apiFeatures.query;
 
 
