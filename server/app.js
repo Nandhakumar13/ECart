@@ -5,12 +5,14 @@ const errorMiddleware  = require("./middleware/error")
 app.set('query parser', 'extended');
 
 const products = require('./router/product');
+const auth = require('./router/auth');
 const home = require('./router/home')
 
 
 app.use(express.json());
 
 app.use('/api/v1/',products);
+app.use('/api/v1/',auth);
 app.use('/',home);
 // app.get('/', (req, res) => {
 //   res.send('Home Page');
