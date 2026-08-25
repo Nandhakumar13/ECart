@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
     }
 })
 
+userSchema.pre('save', function(next){
+    this.password
+});
+
 let schema = mongoose.model('User', userSchema)
 
 module.exports = schema
