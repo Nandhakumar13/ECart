@@ -9,10 +9,13 @@ authMethods.registerUser = catchAsyncError(async (req, res, next) => {
         name,emailId,password,avatar
     });
 
+    const token = user.getJwtToken();
+
     res.status(201).json({
         success:true,
         user,
-        message:"User Created Successfully"
+        message:"User Created Successfully",
+        token
     })
 });
 
