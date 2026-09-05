@@ -1,22 +1,30 @@
 const userModel = require("../model/UserModel");
 const catchAsyncError = require("../middleware/catchAsyncError");
+const ErrorHandler = require("../utils/errorHandler");
+const sendToken = require('../utils/jwt');
 const authMethods = {};
 
 authMethods.registerUser = catchAsyncError(async (req, res, next) => {
-    const {name, emailId,password,avatar} = req.body ;
+    const {name, emailId,password,avatar} = req.body || {};
 
     const user = await userModel.create({
         name,emailId,password,avatar
     });
 
-    const token = user.getJwtToken();
+    let message="";
+    if(user){
+         message = "User Registered Successfully";
+    }
+    sendToken(user,201,res,message);
 
-    res.status(201).json({
-        success:true,
-        user,
-        message:"User Created Successfully",
-        token
-    })
+    // const token = user.getJwtToken();
+
+    // res.status(201).json({
+    //     success:true,
+    //     user,
+    //     token,
+    //     message:"User Created Successfully",
+    // })
 });
 
 authMethods.getAllUsers = catchAsyncError(async(req,res,next) => {
@@ -29,5 +37,31 @@ authMethods.getAllUsers = catchAsyncError(async(req,res,next) => {
     })
 })
 
+
+// login method handler
+
+authMethods.loginUser = catchAsyncError(async(req,res,next) =>{
+    const {emailId,password} = req.body || {};
+    if(!emailId || !password){
+        return next(new ErrorHandler("Enter the EmailId or Password", 400));
+    }
+
+    const user = await userModel.findOne({emailId}).select('+password');
+
+    if(!user){
+        return next(new ErrorHandler("Invalid EmailId. User Not found for the entered emailId", 400));
+    }
+
+    if(!(await user.getPassword(password))){
+        return next(new ErrorHandler("Invalid Password entered", 400));
+    }
+
+    let message="";
+    if(user){
+         message = "User Logged in Successfully";
+    }
+    sendToken(user,201,res,message);
+
+})
 
 module.exports = authMethods;

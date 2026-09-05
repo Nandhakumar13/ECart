@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:[true,'Email ID is required Field'],
         unique:true,
-        validate:[validator.isEmail, "Enter Valid EmailId"]
+        validate:[validator.isEmail, "Enter Valid EmailId"],
+        select:false
     },
     password:{
         type:String,
@@ -43,6 +44,10 @@ userSchema.methods.getJwtToken = function(){
     return jwt.sign({id:this.id}, process.env.JWT_SECRET,{
         expiresIn:process.env.JWT_EXPIRES_TIME
     })
+}
+
+userSchema.methods.getPassword = async function(enteredPassword) {
+    return bcrypt.compare(enteredPassword, this.password);
 }
 
 let schema = mongoose.model('User', userSchema)
