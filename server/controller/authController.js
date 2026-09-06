@@ -49,11 +49,11 @@ authMethods.loginUser = catchAsyncError(async(req,res,next) =>{
     const user = await userModel.findOne({emailId}).select('+password');
 
     if(!user){
-        return next(new ErrorHandler("Invalid EmailId. User Not found for the entered emailId", 400));
+        return next(new ErrorHandler("Invalid EmailId. User Not found for the entered emailId", 401));
     }
 
     if(!(await user.getPassword(password))){
-        return next(new ErrorHandler("Invalid Password entered", 400));
+        return next(new ErrorHandler("Invalid Password entered", 401));
     }
 
     let message="";
