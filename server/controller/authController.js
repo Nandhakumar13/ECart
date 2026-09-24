@@ -64,4 +64,15 @@ authMethods.loginUser = catchAsyncError(async(req,res,next) =>{
 
 })
 
+
+authMethods.logOut = catchAsyncError(async(req,res,next) => {
+    res.cookie('token', null,{
+        expires: new Date(Date.now()),
+        httpOnly:true
+    }).status(200)
+    .json({
+        message:"User Logged out Successfully"
+    })
+})
+
 module.exports = authMethods;
