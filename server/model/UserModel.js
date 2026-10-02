@@ -51,15 +51,13 @@ userSchema.methods.getPassword = async function(enteredPassword) {
     return bcrypt.compare(enteredPassword, this.password);
 }
 
-userSchema.methods.getResetToke  = function(){
+userSchema.methods.getResetToken  = function(){
     const token = crypto.randomBytes(20).toString('hex');
      this.resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
 
     this.resetPasswordTokenExpired = Date.now() + 30 * 60 * 1000;
 
     return token;
-
-
 }
 
 let schema = mongoose.model('User', userSchema)

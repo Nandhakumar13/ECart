@@ -75,4 +75,33 @@ authMethods.logOut = catchAsyncError(async(req,res,next) => {
     })
 })
 
+authMethods.forgotPassword = catchAsyncError(async(req,res,next) =>{
+
+    const user = await userModel.findOne({emailId : req.body.emailId});
+
+    if(!user){
+        return next(new ErrorHandler('User Not Found',404));
+    }
+
+    const resetToken = user.getResetToken();
+    user.save({validateBeforeSave:false});
+
+    const redirectUrl = `${req.protocol}://${req.get(host)}/api/v1/password/reset/${resetToken}`;
+
+    const message = `Your Password reset link has follows \n\n ${redirectUrl} \n\n if you haven't requested this email, then ignore it.`;
+
+    try{
+        // sendmail code here
+    }catch(err){
+            user.resetPasswordToken = undefined;
+            user.resetPasswordTokenExpired = undefined;
+            await user.save({validateBeforeSave:false});
+            return next(new ErrorHandler(err.message), 500);
+    }
+    res.status(200).json({
+        message
+    })
+
+})
+
 module.exports = authMethods;
