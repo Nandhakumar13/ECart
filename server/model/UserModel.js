@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
         required:[true,'Email ID is required Field'],
         unique:true,
         validate:[validator.isEmail, "Enter Valid EmailId"],
-        select:false
+        select:true
     },
     password:{
         type:String,

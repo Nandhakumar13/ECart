@@ -10,7 +10,7 @@ const sendMail = async (options) => {
         }
     }
 
-    const transporter = nodemailer(transport);
+    const transporter = nodemailer.createTransport(transport);
 
     const message = {
         from:`${process.env.SMTP_FROM_USER} <${process.env.SMTP_FROM_EMAIL}>`,
@@ -19,5 +19,9 @@ const sendMail = async (options) => {
         text:options.message
     }
 
+    await transporter.sendMail(message);
+
 }
 
+
+module.exports = sendMail;

@@ -1,6 +1,10 @@
 const ErrorHandler = require("../utils/errorHandler");
 
 module.exports = (err, req, res, next) => {
+  if (res.headersSent) {
+    return next(err);
+  }
+
   err.statusCode = err.statusCode || 500;
 
   if (process.env.NODE_ENV == "development") {
@@ -21,9 +25,10 @@ module.exports = (err, req, res, next) => {
         error = new ErrorHandler(message)
     }
 
-    if(err.name = 'castError'){
-      message = `Resourse not found ${err}`
-      error = new ErrorHandler(message)
+    if(err.name === 'CastError'){
+      message = `Resource not found ${err}`
+      err.statusCode = 404;
+      error = new ErrorHandler(message, 404)
     }
 
      res.status(err.statusCode).json({
